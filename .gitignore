@@ -41,6 +41,7 @@ src/framework/graphics/dx/
 modules/.project/modules.sublime-workspace
 vc14/.vs/
 *.dll
+.idea/*
 
 #################
 ## Visual Studio

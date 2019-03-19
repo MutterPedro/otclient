@@ -110,4 +110,4 @@ set(client_SOURCES ${client_SOURCES}
 )
 
 set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/luafunctions.cpp
-                            PROPERTIES LANGUAGE CXX COMPILE_FLAGS "-g0 -Os")
+                            PROPERTIES LANGUAGE CXX COMPILE_FLAGS "-g0 -Os -shared -fPIC -no-pie")
