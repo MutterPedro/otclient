@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
-docker build -t edubart/otclient .
+cd build || mkdir build && cd build
+rm * -rf
+cmake ../
+make
