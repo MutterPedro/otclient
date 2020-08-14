@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2017 OTClient <https://github.com/edubart/otclient>
+ * Copyright (c) 2010-2020 OTClient <https://github.com/edubart/otclient>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ void LocalPlayer::lockWalk(int millis)
     m_walkLockExpiration = std::max<int>(m_walkLockExpiration, (ticks_t) g_clock.millis() + millis);
 }
 
-bool LocalPlayer::canWalk(Otc::Direction direction)
+bool LocalPlayer::canWalk(Otc::Direction)
 {
     // cannot walk while locked
     if(m_walkLockExpiration != 0 && g_clock.millis() < m_walkLockExpiration)

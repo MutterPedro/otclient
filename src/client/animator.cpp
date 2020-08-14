@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2010-2017 OTClient <https://github.com/edubart/otclient>
+* Copyright (c) 2010-2020 OTClient <https://github.com/edubart/otclient>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,7 @@ void Animator::unserialize(int animationPhases, const FileStreamPtr& fin)
     for(int i = 0; i < m_animationPhases; ++i) {
         int minimum = fin->getU32();
         int maximum = fin->getU32();
-        m_phaseDurations.push_back(std::make_tuple(minimum, maximum));
+        m_phaseDurations.emplace_back(minimum, maximum);
     }
 
     m_phase = getStartPhase();

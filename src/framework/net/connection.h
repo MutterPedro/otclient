@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2017 OTClient <https://github.com/edubart/otclient>
+ * Copyright (c) 2010-2020 OTClient <https://github.com/edubart/otclient>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,10 +33,9 @@ class Connection : public LuaObject
     typedef std::function<void(const boost::system::error_code&)> ErrorCallback;
     typedef std::function<void(uint8*, uint16)> RecvCallback;
 
-    static constexpr int32_t READ_TIMEOUT = 30;
-    static constexpr int32_t WRITE_TIMEOUT = 30;
-
     enum {
+        READ_TIMEOUT = 30,
+        WRITE_TIMEOUT = 30,
         SEND_BUFFER_SIZE = 65536,
         RECV_BUFFER_SIZE = 65536
     };

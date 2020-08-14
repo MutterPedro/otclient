@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2017 OTClient <https://github.com/edubart/otclient>
+ * Copyright (c) 2010-2020 OTClient <https://github.com/edubart/otclient>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@
 #include "item.h"
 #include <framework/luaengine/luaobject.h>
 
-enum tileflags_t
+enum tileflags_t : uint32
 {
     TILESTATE_NONE = 0,
     TILESTATE_PROTECTIONZONE = 1 << 0,

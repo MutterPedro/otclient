@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2017 OTClient <https://github.com/edubart/otclient>
+ * Copyright (c) 2010-2020 OTClient <https://github.com/edubart/otclient>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@ public:
     template <class InputIterator>
     packed_vector(InputIterator first, InputIterator last) : m_size(last - first), m_data(new T[m_size]) { std::copy(first, last, m_data); }
     packed_vector(const packed_vector<T>& other) : m_size(other.m_size), m_data(new T[other.m_size]) { std::copy(other.begin(), other.end(), m_data); }
-    ~packed_vector() { if(m_data) delete[] m_data; }
+    ~packed_vector() { delete[] m_data; }
 
     packed_vector<T,U>& operator=(packed_vector<T,U> other) { other.swap(*this); return *this; }
 
