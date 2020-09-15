@@ -140,12 +140,12 @@ set_source_files_properties(${CMAKE_CURRENT_LIST_DIR}/luafunctions.cpp
 # some build options
 option(LUAJIT "Use lua jit" OFF)
 if(NOT APPLE)
-    option(CRASH_HANDLER "Generate crash reports" ON)
+    # option(CRASH_HANDLER "Generate crash reports" ON)
     option(USE_STATIC_LIBS "Don't use shared libraries (dlls)" ON)
     option(USE_LIBCPP "Use the new libc++ library instead of stdc++" OFF)
     option(USE_LTO "Use link time optimizations" OFF)
 else()
-    set(CRASH_HANDLER OFF)
+    # set(CRASH_HANDLER OFF)
     set(USE_STATIC_LIBS OFF)
     set(USE_LIBCPP ON)
 endif()
@@ -161,7 +161,7 @@ include(FindCXX11)
 
 # gcc compile flags
 set(WARNS_FLAGS "-Wall -Wextra -Wno-unused -Wno-unused-parameter -Wno-unused-result")
-set(CMAKE_CXX_FLAGS                   "${CMAKE_CXX_FLAGS} ${WARNS_FLAGS} ${ARCH_FLAGS} ${CPP2011_FLAGS} -pipe -shared -fPIC -no-pie")
+set(CMAKE_CXX_FLAGS                   "${CMAKE_CXX_FLAGS} ${WARNS_FLAGS} ${ARCH_FLAGS} ${CPP2011_FLAGS} -pipe -fPIC")
 set(CMAKE_CXX_FLAGS_COMPILESPEED      "-O0")
 set(CMAKE_CXX_FLAGS_DEBUG             "-O0 -g")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO    "-O1 -g -fno-omit-frame-pointer")

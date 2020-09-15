@@ -29,31 +29,32 @@
 #include <framework/stdext/stdext.h>
 
 #include <sys/stat.h>
-#include <execinfo.h>
+// #include <execinfo.h>
 
-void Platform::processArgs(std::vector<std::string>& args)
+void Platform::processArgs(std::vector<std::string> &args)
 {
     //nothing todo, linux args are already utf8 encoded
 }
 
-bool Platform::spawnProcess(std::string process, const std::vector<std::string>& args)
+bool Platform::spawnProcess(std::string process, const std::vector<std::string> &args)
 {
     struct stat sts;
-    if(stat(process.c_str(), &sts) == -1 && errno == ENOENT)
+    if (stat(process.c_str(), &sts) == -1 && errno == ENOENT)
         return false;
 
     pid_t pid = fork();
-    if(pid == -1)
+    if (pid == -1)
         return false;
 
-    if(pid == 0) {
-        char* cargs[args.size()+2];
-        cargs[0] = (char*)process.c_str();
-        for(uint i=1;i<=args.size();++i)
-            cargs[i] = (char*)args[i-1].c_str();
-        cargs[args.size()+1] = nullptr;
+    if (pid == 0)
+    {
+        char *cargs[args.size() + 2];
+        cargs[0] = (char *)process.c_str();
+        for (uint i = 1; i <= args.size(); ++i)
+            cargs[i] = (char *)args[i - 1].c_str();
+        cargs[args.size() + 1] = nullptr;
 
-        if(execv(process.c_str(), cargs) == -1)
+        if (execv(process.c_str(), cargs) == -1)
             _exit(EXIT_FAILURE);
     }
 
@@ -65,12 +66,12 @@ int Platform::getProcessId()
     return getpid();
 }
 
-bool Platform::isProcessRunning(const std::string& name)
+bool Platform::isProcessRunning(const std::string &name)
 {
     return false;
 }
 
-bool Platform::killProcess(const std::string& name)
+bool Platform::killProcess(const std::string &name)
 {
     return false;
 }
@@ -84,7 +85,8 @@ std::string Platform::getCurrentDir()
 {
     std::string res;
     char cwd[2048];
-    if(getcwd(cwd, sizeof(cwd)) != nullptr) {
+    if (getcwd(cwd, sizeof(cwd)) != nullptr)
+    {
         res = cwd;
         res += "/";
     }
@@ -104,7 +106,7 @@ bool Platform::fileExists(std::string file)
 
 bool Platform::removeFile(std::string file)
 {
-    if(unlink(file.c_str()) == 0)
+    if (unlink(file.c_str()) == 0)
         return true;
     return false;
 }
@@ -112,14 +114,14 @@ bool Platform::removeFile(std::string file)
 ticks_t Platform::getFileModificationTime(std::string file)
 {
     struct stat attrib;
-    if(stat(file.c_str(), &attrib) == 0)
+    if (stat(file.c_str(), &attrib) == 0)
         return attrib.st_mtime;
     return 0;
 }
 
 void Platform::openUrl(std::string url)
 {
-    if(url.find("http://") == std::string::npos)
+    if (url.find("http://") == std::string::npos)
         url.insert(0, "http://");
     system(stdext::format("xdg-open %s", url).c_str());
 }
@@ -128,13 +130,14 @@ std::string Platform::getCPUName()
 {
     std::string line;
     std::ifstream in("/proc/cpuinfo");
-    while(getline(in, line)) {
+    while (getline(in, line))
+    {
         auto strs = stdext::split(line, ":");
         std::string first = strs[0];
         std::string second = strs[1];
         stdext::trim(first);
         stdext::trim(second);
-        if(strs.size() == 2 && first == "model name")
+        if (strs.size() == 2 && first == "model name")
             return second;
     }
     return std::string();
@@ -144,13 +147,14 @@ double Platform::getTotalSystemMemory()
 {
     std::string line;
     std::ifstream in("/proc/meminfo");
-    while(getline(in, line)) {
+    while (getline(in, line))
+    {
         auto strs = stdext::split(line, ":");
         std::string first = strs[0];
         std::string second = strs[1];
         stdext::trim(first);
         stdext::trim(second);
-        if(strs.size() == 2 && first == "MemTotal")
+        if (strs.size() == 2 && first == "MemTotal")
             return stdext::unsafe_cast<double>(second.substr(0, second.length() - 3)) * 1000.0;
     }
     return 0;
@@ -160,7 +164,8 @@ std::string Platform::getOSName()
 {
     std::string line;
     std::ifstream in("/etc/issue");
-    if(getline(in, line)) {
+    if (getline(in, line))
+    {
         std::size_t end = line.find('\\');
         std::string res = line.substr(0, end);
         stdext::trim(res);
@@ -169,35 +174,39 @@ std::string Platform::getOSName()
     return std::string();
 }
 
-std::string Platform::traceback(const std::string& where, int level, int maxDepth)
+std::string Platform::traceback(const std::string &where, int level, int maxDepth)
 {
-    std::stringstream ss;
+    return "";
+    // std::stringstream ss;
 
-    ss << "\nC++ stack traceback:";
-    if(!where.empty())
-        ss << "\n\t[C++]: " << where;
+    // ss << "\nC++ stack traceback:";
+    // if (!where.empty())
+    //     ss << "\n\t[C++]: " << where;
 
-    void* buffer[maxDepth + level + 1];
-    int numLevels = backtrace(buffer, maxDepth + level + 1);
-    char **tracebackBuffer = backtrace_symbols(buffer, numLevels);
-    if(tracebackBuffer) {
-        for(int i = 1 + level; i < numLevels; i++) {
-            std::string line = tracebackBuffer[i];
-            if(line.find("__libc_start_main") != std::string::npos)
-                break;
-            std::size_t demanglePos = line.find("(_Z");
-            if(demanglePos != std::string::npos) {
-                demanglePos++;
-                int len = std::min(line.find_first_of("+", demanglePos), line.find_first_of(")", demanglePos)) - demanglePos;
-                std::string funcName = line.substr(demanglePos, len);
-                line.replace(demanglePos, len, stdext::demangle_name(funcName.c_str()));
-            }
-            ss << "\n\t" << line;
-        }
-        free(tracebackBuffer);
-    }
+    // void *buffer[maxDepth + level + 1];
+    // int numLevels = backtrace(buffer, maxDepth + level + 1);
+    // char **tracebackBuffer = backtrace_symbols(buffer, numLevels);
+    // if (tracebackBuffer)
+    // {
+    //     for (int i = 1 + level; i < numLevels; i++)
+    //     {
+    //         std::string line = tracebackBuffer[i];
+    //         if (line.find("__libc_start_main") != std::string::npos)
+    //             break;
+    //         std::size_t demanglePos = line.find("(_Z");
+    //         if (demanglePos != std::string::npos)
+    //         {
+    //             demanglePos++;
+    //             int len = std::min(line.find_first_of("+", demanglePos), line.find_first_of(")", demanglePos)) - demanglePos;
+    //             std::string funcName = line.substr(demanglePos, len);
+    //             line.replace(demanglePos, len, stdext::demangle_name(funcName.c_str()));
+    //         }
+    //         ss << "\n\t" << line;
+    //     }
+    //     free(tracebackBuffer);
+    // }
 
-    return ss.str();
+    // return ss.str();
 }
 
 #endif
